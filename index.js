@@ -3,6 +3,8 @@ import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 import randomHex from 'random-hex';
 
+const getColor = (color) => `${color ? '#' + color : randomHex.generate()}`;
+
 const template = (content, opts) => `<!DOCTYPE html>
 <html>
 <head>
@@ -12,12 +14,12 @@ const template = (content, opts) => `<!DOCTYPE html>
     <title>Mono Demo</title>
     <link rel="stylesheet" href="https://monocss.vercel.app/assets/index.2cee2012.css">
 </head>
-<body class="mono-all" style="--mono-main: ${opts.main ? '#' + opts.main : randomHex.generate()}; --mono-back: ${opts.back ? '#' + opts.back : randomHex.generate()};">
+<body class="mono-all" style="--mono-main: ${getColor(opts.main)}; --mono-back: ${getColor(opts.back)};">
     ${content}
 </body>
 </html>`;
 
-const hint = '<p>You may use `main` and `back` in query to select colors.';
+const hint = '<p>You may use `main` and `back` in query to select colors.</p>';
 
 const form = `<form>
     <input name="url">
@@ -29,7 +31,7 @@ const response = (content, opts) => ({
     body: template(content, opts)
 });
 
-export const handler = async function (event, context) {
+export const handler = async (event) => {
     const { main, back } = event.queryStringParameters;
     let url = event.queryStringParameters.url;
 
