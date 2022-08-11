@@ -24,15 +24,17 @@ const form = `<form>
     <input type="submit">
 </form>`;
 
+const response = (content, opts) => ({
+    statusCode: 200,
+    body: template(content, opts)
+});
+
 export const handler = async function (event, context) {
     const { main, back } = event.queryStringParameters;
     let url = event.queryStringParameters.url;
 
     if (!url || !url.endsWith('.md')) {
-        return {
-            statusCode: 200,
-            body: template('<h1>Mono</h1><h2>Enter URL of any markdown file</h2>' + hint + form, { main, back })
-        };
+        return response('<h1>Mono</h1><h2>Enter URL of any markdown file</h2>' + hint + form, { main, back });
     }
 
     if (url.startsWith('https://github.com')) {
@@ -42,18 +44,11 @@ export const handler = async function (event, context) {
     }
 
     try {
-        const request = await got(url);
-        const md = request.body;
-
+        const md = await got(url).then(r => r.body);
         const processedMd = await remark().use(remarkHtml).process(md);
-        return {
-            statusCode: 200,
-            body: template(processedMd.value, { main, back })
-        };
+
+        return response(processedMd.value, { main, back });
     } catch (err) {
-        return {
-            statusCode: 200,
-            body: template('<h1>Error</h1><h2>Try another markdown URL</h2>' + hint + form, { main, back })
-        };
+        return response('<h1>Error</h1><h2>Try another markdown URL</h2>' + hint + form, { main, back });
     }
 };
