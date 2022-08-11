@@ -1,4 +1,3 @@
-import express from 'express';
 import got from 'got';
 import { remark } from 'remark';
 import remarkHtml from 'remark-html';
@@ -25,14 +24,15 @@ const form = `<form>
     <input type="submit">
 </form>`;
 
-const app = express();
-
-app.get('/', async (req, res) => {
-    const { main, back } = req.query;
-    let url = req.query.url;
+export const handler = async function (event, context) {
+    const { main, back } = event.queryStringParameters;
+    let url = event.queryStringParameters.url;
 
     if (!url || !url.endsWith('.md')) {
-        return res.send(template('<h1>Mono</h1><h2>Enter URL of any markdown file</h2>' + hint + form, { main, back }));
+        return {
+            statusCode: 200,
+            body: template('<h1>Mono</h1><h2>Enter URL of any markdown file</h2>' + hint + form, { main, back })
+        };
     }
 
     if (url.startsWith('https://github.com')) {
@@ -46,12 +46,14 @@ app.get('/', async (req, res) => {
         const md = request.body;
 
         const processedMd = await remark().use(remarkHtml).process(md);
-        res.send(template(processedMd.value, { main, back }));
+        return {
+            statusCode: 200,
+            body: template(processedMd.value, { main, back })
+        };
     } catch (err) {
-        res.send(template('<h1>Error</h1><h2>Try another markdown URL</h2>' + hint + form, { main, back }));
+        return {
+            statusCode: 200,
+            body: template('<h1>Error</h1><h2>Try another markdown URL</h2>' + hint + form, { main, back })
+        };
     }
-});
-
-app.listen(process.env.PORT || 3000, () => {
-    console.log('listening...');
-});
+};
