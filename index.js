@@ -12,7 +12,7 @@ const template = (content, opts) => `<!DOCTYPE html>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mono Demo</title>
-    <link rel="stylesheet" href="https://monocss.vercel.app/assets/index.2cee2012.css">
+    <link rel="stylesheet" href="https://monocss.vercel.app/assets/index.8d431fde.css">
 </head>
 <body class="mono-all" style="--mono-main: ${getColor(opts.main)}; --mono-back: ${getColor(opts.back)};">
     <main>${content}</main>
