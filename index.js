@@ -15,7 +15,7 @@ const template = (content, opts) => `<!DOCTYPE html>
     <link rel="stylesheet" href="https://monocss.vercel.app/assets/index.2cee2012.css">
 </head>
 <body class="mono-all" style="--mono-main: ${getColor(opts.main)}; --mono-back: ${getColor(opts.back)};">
-    ${content}
+    <main>${content}</main>
 </body>
 </html>`;
 
